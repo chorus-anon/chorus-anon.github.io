@@ -31,7 +31,7 @@ static/figures/png/*
 !static/figures/png/figure2.png
 !static/figures/png/graph-1.png
 !static/figures/png/graph-2-2.png
-!static/figures/png/perturb-bar.png
+!static/figures/png/perturb-graph.png
 
 # Unused video sets and extra clips
 static/videos/fast-4x/
