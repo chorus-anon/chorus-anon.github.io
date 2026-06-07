@@ -190,10 +190,121 @@ body {
   border-color: #8b3fd1;
 }
 
+/* ---- Left-side section progress nav ---- */
+#section-progress {
+  position: fixed;
+  top: 50%;
+  left: 24px;
+  transform: translateY(-50%);
+  z-index: 30;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-left: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+#section-progress.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+#section-progress .sp-track {
+  position: relative;
+  width: 2px;
+  align-self: stretch;
+  background: rgba(0, 0, 0, 0.10);
+  border-radius: 2px;
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+#section-progress .sp-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: #9d4edd;
+  border-radius: 2px;
+  transition: height 0.3s ease;
+}
+#section-progress .sp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+#section-progress .sp-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+  text-decoration: none;
+  line-height: 1;
+}
+#section-progress .sp-dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #c4c4c4;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+#section-progress .sp-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: normal;
+  max-width: 140px;
+  color: #777;
+  opacity: 1;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  pointer-events: none;
+}
+#section-progress .sp-item:hover .sp-dot {
+  border-color: #9d4edd;
+  transform: scale(1.15);
+}
+#section-progress .sp-item.is-active .sp-dot {
+  background: #9d4edd;
+  border-color: #9d4edd;
+}
+#section-progress .sp-item.is-active .sp-label {
+  opacity: 1;
+  transform: translateX(0);
+  color: #9d4edd;
+}
+/* When the content column nears the viewport edges there's no margin left for
+   the labels, so collapse to a dots-only rail and only reveal a label (as a
+   floating chip) for the item being hovered. */
+@media screen and (max-width: 1215px) {
+  #section-progress { left: 14px; }
+  /* No room in the margin here: collapse to dots, reveal a label only on hover. */
+  #section-progress .sp-label {
+    max-width: 200px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  #section-progress .sp-item:hover .sp-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@media screen and (max-width: 768px) {
+  #section-progress { display: none; }
+}
+
 /* Header video lives in its own clean white section below the title. */
 .header-video-section {
   background: #fff;
-  padding-top: 2.5rem;
+  padding-top: 1.5rem;
 }
 
 /* More breathing room between the CHORUS title and the subheading. */
@@ -203,7 +314,19 @@ body {
 
 /* More space between section/sub headers and their following text. */
 .section .title.is-3 {
+  font-size: 2.2rem;        /* sized to read like the CHORUS title */
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+/* Purple accent bar trailing horizontally to the right of each section title. */
+.section .title.is-3::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 4px;
+  margin-left: 0.9rem;
+  border-radius: 4px;
+  background: #9d4edd;
 }
 .section .title.is-4 {
   margin-top: 2.5rem;
@@ -234,9 +357,95 @@ body {
   margin: 0.75rem auto 0.5rem auto;
 }
 
+/* Tighter vertical rhythm so the page packs more into each screen. */
+.section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.content p:not(:last-child) {
+  margin-bottom: 0.75rem;
+}
+
+/* Each real-world task: description pinned beside its videos in one row. */
+.task-row {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+/* A thin rule between consecutive tasks, matching the Results dividers. */
+.task-row + .task-row {
+  border-top: 1px solid rgba(0, 0, 0, 0.09);
+  padding-top: 1.6rem;
+  margin-top: 1.4rem;
+}
+.task-row .task-desc {
+  padding-right: 1.2rem;
+}
+.task-row .task-desc .title.is-5 {
+  margin-bottom: 0.5rem;
+}
+.task-row .task-desc p {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: #444;
+  text-align: left;
+}
+.vid-cap {
+  margin-top: 6px;
+  font-size: 0.98rem;
+  color: #555;
+}
+
+/* Results: text beside a legible graph, with a slim filmstrip of clips below. */
+.result-row {
+  margin-top: 1.6rem;
+  margin-bottom: 0.3rem;
+}
+/* A thin rule above each finding (after the first) delineates the subsections. */
+.result-row:not(:first-of-type) {
+  border-top: 1px solid rgba(0, 0, 0, 0.09);
+  padding-top: 1.8rem;
+}
+/* A closing rule below the final finding (4). */
+.result-row:last-of-type {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+  padding-bottom: 1.8rem;
+}
+.result-row .result-graph {
+  max-width: 340px;
+  margin: 0 auto;
+}
+.result-row .title.is-5 {
+  margin-bottom: 0.5rem;
+}
+.result-row-text p {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: #444;
+}
+/* Supporting clips fan out to span the full width, at a uniform height. */
+.clip-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin: 0.4rem auto 0.5rem auto;
+}
+.clip-strip .clip {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  text-align: center;
+}
+.clip-strip .clip video {
+  width: 100%;
+  height: 230px;            /* uniform height across every results clip */
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}
+
 .interpolation-panel {
-  margin: 0.75rem auto 0.5rem auto;
-  padding: 0.4rem;          /* trim the chunky padding around the videos */
+  margin: 0.25rem auto;
+  padding: 0.25rem;         /* trim the chunky padding around the videos */
 }
 .interpolation-panel .column {
   padding: 0.4rem;

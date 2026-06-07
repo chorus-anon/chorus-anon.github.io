@@ -26,6 +26,12 @@
 </head>
 <body>
 
+<!-- ============================== SECTION PROGRESS NAV ============================== -->
+<nav id="section-progress" aria-label="Section navigation">
+  <div class="sp-track"><div class="sp-fill"></div></div>
+  <ul class="sp-list"></ul>
+</nav>
+
 <!-- ============================== HERO / TITLE ============================== -->
 <section class="hero" id="title">
   <div class="hero-body">
@@ -74,8 +80,8 @@
         <br><br>
         <h2 class="subtitle has-text-centered scroll-element">
           <b>CHORUS</b> adapts a single pretrained VLA backbone into one policy for an entire multi-robot team.
-          At inference, each robot runs its own independent copy, conditioned only on its local observations
-          and a robot-identifying prompt, with <i>no</i> shared cameras, proprioception, or inter-robot communication.
+          At inference, each robot runs an independent copy of CHORUS, conditioned only on its local observations
+          and a robot-identifying prompt, <b>with <i>no</i> shared cameras, proprioception, or inter-robot communication.</b>
         </h2>
       </div>
     </div>
@@ -123,11 +129,12 @@
     <br>
     <div class="content has-text-justified scroll-element">
       <p>
-        CHORUS casts decentralized multi-robot control as <b>fine-tuning a single pretrained VLA backbone</b>
-        (&pi;<sub>0.5</sub>) on multi-robot demonstrations. A robot sampler draws single-robot tuples
-        (observation, action, and identity prompt) from the multi-robot dataset, and the shared policy
-        is conditioned on a <b>robot-identifying prompt</b> prepended at every timestep. It predicts a
-        <b>padded, 32-dimensional action</b>, so one set of weights can drive embodiments with different action
+        Our key insight is that <b>strong visuomotor priors may be sufficient to enable decentralized,
+        multi-embodiment collaboration without alignment or communication at inference.</b> To this end, CHORUS
+        <b>finetunes a single pretrained VLA backbone</b> (&pi;<sub>0.5</sub>) on multi-robot demonstrations.
+        A robot sampler draws single-robot tuples (observation, action) from the multi-robot dataset, and the
+        shared policy is conditioned on a <b>robot-identifying prompt</b> prepended at every timestep. It predicts
+        a <b>padded, 32-dimensional action</b>, so one set of weights can drive embodiments with different action
         spaces and control rates.
       </p>
       <p>
@@ -136,7 +143,7 @@
         states, or communication channels are shared among robots, making CHORUS more deployable than centralized
         alternatives and cheaper to train than per-robot decentralized policies. Because each robot acts on its own
         observations, CHORUS also supports <b>asynchronous execution</b> and keeps the context window constant as
-        the team grows.
+        the team size grows.
       </p>
     </div>
   </div>
@@ -145,102 +152,114 @@
 <!-- ============================== TASKS / ROLLOUTS ============================== -->
 <section class="section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 scroll-element">Real-World Collaboration Tasks</h2>
+    <h2 class="title is-3 scroll-element">Real-World Tasks</h2>
     <div class="content has-text-justified scroll-element">
       <p>
         We evaluate CHORUS on a suite of real-world multi-embodiment collaboration tasks spanning mobile
-        manipulators (Kinova, ARX, and YAM): <b>laundry basket lifting</b>, <b>mobile tape measuring</b>,
-        <b>library book handover</b>, and a <b>three-robot move</b>. Each robot receives a single identity prompt
+        manipulators (Kinova, ARX, and YAM). Each robot receives a single identity prompt
         for the entire task, and no information is exchanged between robots at runtime; coordination must
         emerge through each robot's visual perception of its teammates.
       </p>
     </div>
 
     <!-- Basket Lift -->
-    <h3 class="title is-4 scroll-element">Laundry Basket Lift</h3>
-    <div class="content has-text-justified scroll-element">
-      <p>
-        A two-robot team grasps opposite handles of a laundry basket and lifts it together. Each robot must wait
-        for its teammate to secure its handle before the joint lift, coordinating entirely from local views.
-      </p>
-    </div>
-    <div class="columns is-vcentered interpolation-panel scroll-element">
-      <div class="column is-half has-text-centered">
-        <video class="autoloop crop-match crop-43" autoplay muted loop playsinline controls width="100%">
-          <source src="./static/videos/web/chorus-full-basket.mp4" type="video/mp4">
-        </video>
-        <p style="margin-top: 10px;">Full basket</p>
+    <div class="columns is-vcentered task-row scroll-element">
+      <div class="column is-one-quarter task-desc">
+        <h3 class="title is-5">Laundry Basket Lift</h3>
+        <p>
+          A two-robot team grasps opposite handles of a laundry basket and lifts it together. Each robot must wait
+          for its teammate to secure its handle before the joint lift, coordinating entirely from local views.
+        </p>
       </div>
-      <div class="column is-half has-text-centered">
-        <video class="autoloop crop-match crop-43" autoplay muted loop playsinline controls width="100%">
-          <source src="./static/videos/web/chorus-emptybasket.mp4" type="video/mp4">
-        </video>
-        <p style="margin-top: 10px;">Empty basket</p>
+      <div class="column">
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-half has-text-centered">
+            <video class="autoloop crop-match crop-43" autoplay muted loop playsinline controls width="100%">
+              <source src="./static/videos/web/chorus-full-basket.mp4" type="video/mp4">
+            </video>
+            <p class="vid-cap">Full basket</p>
+          </div>
+          <div class="column is-half has-text-centered">
+            <video class="autoloop crop-match crop-43" autoplay muted loop playsinline controls width="100%">
+              <source src="./static/videos/web/chorus-emptybasket.mp4" type="video/mp4">
+            </video>
+            <p class="vid-cap">Empty basket</p>
+          </div>
+        </div>
       </div>
     </div>
-    <br/>
 
     <!-- Tape Measure -->
-    <h3 class="title is-4 scroll-element">Mobile Tape Measure</h3>
-    <div class="content has-text-justified scroll-element">
-      <p>
-        One robot grabs the tape measure and holds an anchor point while the mobile teammate extends the tape to
-        measure a distance, a tightly coupled interaction across two embodiments at different control rates.
-      </p>
-    </div>
-    <div class="columns is-vcentered interpolation-panel scroll-element">
-      <div class="column is-half has-text-centered">
-        <video class="autoloop" autoplay muted loop playsinline controls width="100%">
-          <source src="./static/videos/web/chorus-tape.mp4" type="video/mp4">
-        </video>
-        <p style="margin-top: 10px;">Tape measure</p>
+    <div class="columns is-vcentered task-row scroll-element">
+      <div class="column is-one-quarter task-desc">
+        <h3 class="title is-5">Mobile Tape Measure</h3>
+        <p>
+          One robot grabs the tape measure and holds an anchor point while the mobile teammate extends the tape to
+          measure a distance, a tightly coupled interaction across two embodiments at different control rates.
+        </p>
       </div>
-      <div class="column is-half has-text-centered">
-        <video class="autoloop" autoplay muted loop playsinline controls width="100%">
-          <source src="./static/videos/web/chorus-tape-dist.mp4" type="video/mp4">
-        </video>
-        <p style="margin-top: 10px;">With distractors</p>
+      <div class="column">
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-half has-text-centered">
+            <video class="autoloop" autoplay muted loop playsinline controls width="100%">
+              <source src="./static/videos/web/chorus-tape.mp4" type="video/mp4">
+            </video>
+            <p class="vid-cap">Tape measure</p>
+          </div>
+          <div class="column is-half has-text-centered">
+            <video class="autoloop" autoplay muted loop playsinline controls width="100%">
+              <source src="./static/videos/web/chorus-tape-dist.mp4" type="video/mp4">
+            </video>
+            <p class="vid-cap">With distractors</p>
+          </div>
+        </div>
       </div>
     </div>
-    <br/>
 
     <!-- Book Handover -->
-    <h3 class="title is-4 scroll-element">Library Book Handover</h3>
-    <div class="content has-text-justified scroll-element">
-      <p>
-        One robot grabs a book and hands it to a mobile teammate, which receives the book and retreats,
-        requiring precise spatial coordination at the moment of exchange.
-      </p>
-    </div>
-    <div class="columns is-centered is-vcentered interpolation-panel scroll-element">
-      <div class="column is-half has-text-centered">
-        <video class="autoloop" autoplay muted loop playsinline controls width="100%">
-          <source src="./static/videos/web/chorus-handover.mp4" type="video/mp4">
-        </video>
+    <div class="columns is-vcentered task-row scroll-element">
+      <div class="column is-one-quarter task-desc">
+        <h3 class="title is-5">Library Book Handover</h3>
+        <p>
+          One robot grabs a book and hands it to a mobile teammate, which receives the book and retreats,
+          requiring precise spatial coordination at the moment of exchange.
+        </p>
+      </div>
+      <div class="column">
+        <div class="columns is-centered is-vcentered interpolation-panel">
+          <div class="column is-three-fifths has-text-centered">
+            <video class="autoloop" autoplay muted loop playsinline controls width="100%">
+              <source src="./static/videos/web/chorus-handover.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
       </div>
     </div>
-    <br/>
 
     <!-- 3-Robot Move -->
-    <h3 class="title is-4 scroll-element">Three-Robot Move</h3>
-    <div class="content has-text-justified scroll-element">
-      <p>
-        The same recipe scales to a <b>three-robot team</b> of Kinova and YAM mobile manipulators that
-        collaboratively transports a basket, with no architectural change to the policy.
-      </p>
-    </div>
-    <div class="columns is-vcentered interpolation-panel scroll-element">
-      <div class="column is-half has-text-centered">
-        <video class="autoloop" autoplay muted loop playsinline controls width="100%">
-          <source src="./static/videos/web/5-top-good-blur.mp4" type="video/mp4">
-        </video>
-        <p style="margin-top: 10px;">Top view</p>
+    <div class="columns is-vcentered task-row scroll-element">
+      <div class="column is-one-quarter task-desc">
+        <h3 class="title is-5">Three-Robot Move</h3>
+        <p>
+          The same recipe scales to a <b>three-robot team</b> of Kinova and YAM mobile manipulators that
+          collaboratively transports a basket, with no architectural change to the policy.
+        </p>
       </div>
-      <div class="column is-half has-text-centered">
-        <video class="autoloop" data-start="3.5" data-end="24.9" autoplay muted loop playsinline controls width="100%">
-          <source src="./static/videos/web/5-side-good.mp4#t=3.5" type="video/mp4">
-        </video>
-        <p style="margin-top: 10px;">Side view</p>
+      <div class="column">
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-half has-text-centered">
+            <video class="autoloop" autoplay muted loop playsinline controls width="100%">
+              <source src="./static/videos/web/5-top-logo-blurred.mp4" type="video/mp4">
+            </video>
+            <p class="vid-cap">Top view</p>
+          </div>
+          <div class="column is-half has-text-centered">
+            <video class="autoloop" data-start="3.5" data-end="24.9" autoplay muted loop playsinline controls width="100%">
+              <source src="./static/videos/web/5-side-good.mp4#t=3.5" type="video/mp4">
+            </video>
+            <p class="vid-cap">Side view</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -252,119 +271,104 @@
     <h2 class="title is-3 scroll-element">Results</h2>
 
     <!-- (1) pretrained backbone vs from-scratch -->
-    <h3 class="title is-4 scroll-element">(1) Effect of the pretrained backbone</h3>
-    <div class="result-card scroll-element">
-      <div class="columns is-vcentered">
-        <div class="column is-half has-text-centered">
-          <img class="result-graph" src="./static/figures/png/graph-1.png"
-               alt="Success rate: diffusion decentralized vs VLA decentralized vs CHORUS."/>
-        </div>
-        <div class="column is-half">
-          <div class="content has-text-justified">
-            <p>
-              Both VLA-based methods significantly outperform decentralized diffusion policies trained from scratch,
-              with CHORUS leading by <b>64 percentage points</b> in mean success rate. From-scratch diffusion policies
-              exhibit a characteristic <b>mismatch</b> pattern, in which one robot proceeds with its half of the
-              interaction before the other has caught up, for example grabbing one handle and beginning to move
-              before the teammate has grasped the other, causing the basket to slip.
-            </p>
-          </div>
-        </div>
+    <div class="columns is-vcentered task-row result-row scroll-element">
+      <div class="column is-two-fifths task-desc">
+        <h3 class="title is-5">(1) Effect of the pretrained backbone</h3>
+        <p>
+          Both VLA-based methods significantly outperform decentralized diffusion policies trained from scratch,
+          with CHORUS leading by <b>64 percentage points</b> in mean success rate. From-scratch diffusion policies
+          exhibit a characteristic <b>mismatch</b> pattern, in which one robot proceeds with its half of the
+          interaction before the other has caught up, causing the basket to slip.
+        </p>
+      </div>
+      <div class="column has-text-centered">
+        <img class="result-graph" src="./static/figures/png/graph-1.png"
+             alt="Success rate: diffusion decentralized vs VLA decentralized vs CHORUS."/>
       </div>
     </div>
-    <div class="columns is-vcentered interpolation-panel scroll-element">
-      <div class="column is-half has-text-centered">
-        <video class="autoloop crop-match crop-1610" autoplay muted loop playsinline controls width="100%">
+    <div class="clip-strip scroll-element">
+      <figure class="clip">
+        <video class="autoloop" autoplay muted loop playsinline controls>
           <source src="./static/videos/web/mismatch.mp4" type="video/mp4">
         </video>
-        <p style="margin-top: 10px;">Diffusion: teammate mismatch</p>
-      </div>
-      <div class="column is-half has-text-centered">
-        <video class="autoloop crop-match crop-1610" autoplay muted loop playsinline controls width="100%">
+        <figcaption class="vid-cap">Diffusion: teammate mismatch</figcaption>
+      </figure>
+      <figure class="clip">
+        <video class="autoloop" autoplay muted loop playsinline controls>
           <source src="./static/videos/web/diff-tape.mp4" type="video/mp4">
         </video>
-        <p style="margin-top: 10px;">Diffusion: failed tape measure</p>
-      </div>
+        <figcaption class="vid-cap">Diffusion: failed tape measure</figcaption>
+      </figure>
     </div>
-    <br/>
 
     <!-- (2) weight sharing & reactivity -->
-    <h3 class="title is-4 scroll-element">(2) Effect of weight-sharing on teammate reactivity</h3>
-    <div class="result-card scroll-element">
-      <div class="columns is-vcentered">
-        <div class="column is-half has-text-centered">
-          <img class="result-graph" style="max-width:260px;" src="./static/figures/png/perturb-bar.png"
-               alt="Recovery rate: CHORUS without weight sharing vs CHORUS."/>
-        </div>
-        <div class="column is-half">
-          <div class="content has-text-justified">
-            <p>
-              Training one shared policy on <i>both</i> robots' perspectives of every interaction induces a representation
-              that implicitly models the teammate, whereas per-robot policies have no representational incentive to do so.
-              Under teammate perturbations, CHORUS <b>recovers 40% more often</b> than a backbone fine-tuned per-robot,
-              reacting to teammate behavior nearly <b>2&times;</b> more effectively.
-            </p>
-          </div>
-        </div>
+    <div class="columns is-vcentered task-row result-row scroll-element">
+      <div class="column is-two-fifths task-desc">
+        <h3 class="title is-5">(2) Effect of weight-sharing on teammate reactivity</h3>
+        <p>
+          Training one shared policy on <i>both</i> robots' perspectives of every interaction induces a representation
+          that implicitly models the teammate, whereas per-robot policies have no representational incentive to do so.
+          Under teammate perturbations, CHORUS <b>recovers 40% more often</b> than a backbone fine-tuned per-robot,
+          reacting to teammate behavior nearly <b>2&times;</b> more effectively.
+        </p>
+      </div>
+      <div class="column has-text-centered">
+        <img class="result-graph" style="max-width:230px;" src="./static/figures/png/perturb-graph.png"
+             alt="Recovery rate: CHORUS without weight sharing vs CHORUS."/>
       </div>
     </div>
-    <div class="columns is-vcentered interpolation-panel scroll-element">
-      <div class="column is-one-third has-text-centered">
-        <video class="autoloop crop-match crop-75" autoplay muted loop playsinline controls width="100%">
+    <div class="clip-strip scroll-element">
+      <figure class="clip">
+        <video class="autoloop" autoplay muted loop playsinline controls>
           <source src="./static/videos/web/wo-miss.mp4" type="video/mp4">
         </video>
-        <p style="margin-top: 10px;">No weight sharing: misses</p>
-      </div>
-      <div class="column is-one-third has-text-centered">
-        <video class="autoloop crop-match crop-75" autoplay muted loop playsinline controls width="100%">
+        <figcaption class="vid-cap">❌ No weight sharing: misses</figcaption>
+      </figure>
+      <figure class="clip">
+        <video class="autoloop" autoplay muted loop playsinline controls>
           <source src="./static/videos/web/wo-runaway.mp4" type="video/mp4">
         </video>
-        <p style="margin-top: 10px;">No weight sharing: runaway</p>
-      </div>
-      <div class="column is-one-third has-text-centered">
-        <video class="autoloop crop-match crop-75" autoplay muted loop playsinline controls width="100%">
+        <figcaption class="vid-cap">❌ No weight sharing: runaway</figcaption>
+      </figure>
+      <figure class="clip">
+        <video class="autoloop" autoplay muted loop playsinline controls>
           <source src="./static/videos/web/new-grasp-reactive.mp4" type="video/mp4">
         </video>
-        <p style="margin-top: 10px;">CHORUS: reactive re-grasp</p>
-      </div>
+        <figcaption class="vid-cap">✅ <b>CHORUS</b>: reactive re-grasp</figcaption>
+      </figure>
     </div>
-    <br/>
 
     <!-- (3) centralized -->
-    <h3 class="title is-4 scroll-element">(3) Comparison to centralized policy framework</h3>
-    <div class="result-card scroll-element">
-      <div class="columns is-vcentered">
-        <div class="column is-half has-text-centered">
-          <img class="result-graph" src="./static/figures/png/graph-2-2.png"
-               alt="Success rate: VLA centralized vs CHORUS."/>
-        </div>
-        <div class="column is-half">
-          <div class="content has-text-justified">
-            <p>
-              A centralized policy conditions on the entire team's observations and, in principle, should be an upper
-              bound on collaborative performance. Yet despite conditioning on strictly <i>less</i> information, CHORUS
-              <b>outperforms the centralized VLA</b> in mean success rate. Because CHORUS conditions on only one robot's
-              observations at a time, its inputs more closely reflect the backbone's pretraining distribution, allowing it
-              to better retain its visuomotor priors; <b>the centralized setup instead breaks the semantic correspondence
-              learned during pretraining and is sensitive to any asynchronization between teammates.</b>
-            </p>
-          </div>
-        </div>
+    <div class="columns is-vcentered task-row result-row scroll-element">
+      <div class="column is-two-fifths task-desc">
+        <h3 class="title is-5">(3) Comparison to centralized policy framework</h3>
+        <p>
+          A centralized policy conditions on the entire team's observations and, in principle, should be an upper
+          bound on collaborative performance. Yet despite conditioning on strictly <i>less</i> information, CHORUS
+          <b>outperforms the centralized VLA</b> in mean success rate. Because CHORUS conditions on only one robot's
+          observations at a time, its inputs more closely reflect the backbone's pretraining distribution, allowing it
+          to better retain its visuomotor priors; <b>the centralized setup instead breaks the semantic correspondence
+          learned during pretraining.</b>
+        </p>
+      </div>
+      <div class="column has-text-centered">
+        <img class="result-graph" src="./static/figures/png/graph-2-2.png"
+             alt="Success rate: VLA centralized vs CHORUS."/>
       </div>
     </div>
 
     <!-- (4) scaling -->
-    <h3 class="title is-4 scroll-element">(4) Scaling to three-robot teams</h3>
-    <div class="scroll-element has-text-centered">
-      <img class="media-full" src="./static/figures/three-robot-stills.png"
+    <div class="result-row scroll-element">
+      <h3 class="title is-5">(4) Scaling to three-robot teams</h3>
+      <div class="result-row-text">
+        <p>
+          We train a single CHORUS policy for a three-robot team of Kinova and YAM mobile manipulators, achieving
+          <b>90% task success</b> with no architectural change. Because the context window and parameter count stay
+          constant in team size, the same recipe extends gracefully to larger and more heterogeneous teams.
+        </p>
+      </div>
+      <img class="media-full" style="margin:1.4rem auto 0 auto;" src="./static/figures/three-robot-stills.png"
            alt="Three-robot basket transport with partial observability and reactivity."/>
-    </div>
-    <div class="content has-text-justified scroll-element">
-      <p>
-        We train a single CHORUS policy for a three-robot team of Kinova and YAM mobile manipulators, achieving
-        <b>90% task success</b> with no architectural change. Because the context window and parameter count stay
-        constant in team size, the same recipe extends gracefully to larger and more heterogeneous teams.
-      </p>
     </div>
   </div>
 </section>
@@ -372,7 +376,7 @@
 <!-- ============================== BIBTEX ============================== -->
 <section class="section">
   <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
+    <h2 class="title is-3">BibTeX</h2>
     <pre><code>@inproceedings{chorus2026,
     title={CHORUS: Decentralized Multi-Embodiment Collaboration with One VLA Policy},
     author={Anonymous},
@@ -404,6 +408,66 @@
       if (p && p.catch) { p.catch(function () {}); }
     });
   }
+
+  // ---- Left-side section progress nav --------------------------------------
+  (function () {
+    var nav = document.getElementById('section-progress');
+    if (!nav) return;
+    var list = nav.querySelector('.sp-list');
+    var fill = nav.querySelector('.sp-fill');
+
+    // Build one entry per top-level section heading.
+    var headings = Array.prototype.slice.call(
+      document.querySelectorAll('section h2.title.is-3, section .title.is-3, section h2.title')
+    ).filter(function (h) { return h.textContent.trim().length; });
+
+    var entries = headings.map(function (h, i) {
+      if (!h.id) {
+        h.id = 'sec-' + h.textContent.trim().toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') + '-' + i;
+      }
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.className = 'sp-item';
+      a.innerHTML = '<span class="sp-dot"></span><span class="sp-label">' +
+        h.textContent.trim() + '</span>';
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      li.appendChild(a);
+      list.appendChild(li);
+      return { heading: h, item: a };
+    });
+
+    if (!entries.length) { nav.style.display = 'none'; return; }
+
+    function setActive(idx) {
+      entries.forEach(function (e, i) {
+        e.item.classList.toggle('is-active', i === idx);
+      });
+      fill.style.height = entries.length > 1
+        ? (idx / (entries.length - 1) * 100) + '%' : '0%';
+    }
+
+    // The nav is shown from the start, regardless of scroll position.
+    nav.classList.add('is-visible');
+
+    // Highlight the heading whose section we're currently reading.
+    function onScroll() {
+      var marker = window.innerHeight * 0.35;
+      var active = 0;
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].heading.getBoundingClientRect().top <= marker) active = i;
+      }
+      setActive(active);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  })();
 
   // Loop videos over a custom [data-start, data-end] window.
   document.querySelectorAll('video[data-start], video[data-end]').forEach(function (v) {
